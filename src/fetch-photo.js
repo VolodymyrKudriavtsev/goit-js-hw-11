@@ -7,7 +7,7 @@ const searchParams = new URLSearchParams({
   orientation: 'horizontal',
   safesearch: true,
   page: 1,
-  per_page: 4,
+  per_page: 12,
 });
 
 export async function fetchPhoto(query) {

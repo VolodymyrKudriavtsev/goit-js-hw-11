@@ -12,6 +12,12 @@ body {
   line-height: 1.5;
 }
 
+img {
+  display: block;
+  max-width: 100%;
+  /* height: fit-content; */
+}
+
 .search-form {
   position: fixed;
   top: 0;
@@ -100,6 +106,23 @@ input {
 .info {
   display: flex;
   justify-content: space-between;
-  padding: 5px;
+  /* padding: 5px; */
   font-size: 14;
+  /* justify-content: space-between; */
+  padding: 5px;
+  /* font-size: 14px; */
+  /* display: flex; */
+  gap: 20px;
+  padding: 15px;
+  font-size: x-small;
+}
+
+p {
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+b {
+  display: block;
+  /* text-align: center; */
 }

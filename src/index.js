@@ -2,17 +2,52 @@ import './css/styles.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import refs from './references';
 import { fetchPhoto } from './fetch-photo';
-// const axios = require('axios').default;
 
-let items = [];
+let photoCards = [];
 
 // !---Р А З М Е Т К А !!!
+
+//!? webformatURL - посилання на маленьке зображення для списку карток.
+//! largeImageURL - посилання на велике зображення.
+//!? tags - рядок з описом зображення. Підійде для атрибуту alt.
+//!? likes - кількість лайків.
+//!? views - кількість переглядів.
+//!? comments - кількість коментарів.
+//!? downloads - кількість завантажень.
+
+const getCardsMarkup = ({
+  webformatURL,
+  largeImageURL,
+  tags,
+  likes,
+  views,
+  comments,
+  downloads,
+}) => {
+  return `
+  <div class="photo-card">
+    <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+    <div class="info">
+      <p class="info-item"><b>Likes</b>${likes}</p>
+      <p class="info-item"><b>Views</b>${views}</p>
+      <p class="info-item"><b>Comments</b>${comments}</p>
+      <p class="info-item"><b>Downloads</b>${downloads}</p>
+    </div>
+  </div>`;
+};
 
 const searchBtnDisableToggle = () => {
   refs.submitButton.toggleAttribute('disabled');
   refs.submitButton.classList.toggle('disabled');
   refs.iconSpinner.classList.toggle('is-hidden');
   refs.iconSearch.classList.toggle('is-hidden');
+};
+
+const render = () => {
+  refs.gallery.insertAdjacentHTML(
+    'beforeend',
+    photoCards.map(getCardsMarkup).join('')
+  );
 };
 
 // !---Спрятать 'Load More'
@@ -33,21 +68,15 @@ const onSearchFormSubmit = e => {
   // }
 
   fetchPhoto(searchQuery).then(({ data: { hits } }) => {
-    console.log(hits);
     if (hits.length === 0) {
       return Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
     }
+    photoCards = hits;
+    render();
     searchBtnDisableToggle();
   });
-
-  // .then(({ hits }) => {
-  //   if (hits.length === 0) {
-  //     return Notify.failure(
-  //       'Sorry, there are no images matching your search query. Please try again.'
-  //     );
-  //   }
 
   //   items = hits;
   //   console.log(items);
