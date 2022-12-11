@@ -2,6 +2,13 @@ import './css/styles.css';
 // import debounce from 'lodash.debounce';
 // import { Notify } from 'notiflix/build/notiflix-notify-aio';
 // import { fetchCountries } from './fetchCountries';
+import refs from './references';
+console.log(refs);
+
+//! refs.search.addEventListener('click', e => {
+//!   refs.iconSpinner.classList.toggle('is-hidden');
+//!   refs.iconSearch.classList.toggle('is-hidden');
+//! });
 
 // const DEBOUNCE_DELAY = 300;
 // let searchBoxValue = '';
@@ -55,9 +62,13 @@ import './css/styles.css';
 //   );
 // };
 
-// const render = () => {
+// const clearHTML = () => {
 //   refs.counrtyList.innerHTML = '';
 //   refs.counrtyInfo.innerHTML = '';
+// };
+
+// const render = () => {
+//   clearHTML();
 
 //   if (countries.length > 10) {
 //     return Notify.info(
@@ -74,15 +85,13 @@ import './css/styles.css';
 //   searchBoxValue = e.target.value.trim();
 
 //   if (searchBoxValue === '') {
-//     refs.counrtyList.innerHTML = '';
-//     refs.counrtyInfo.innerHTML = '';
+//     clearHTML();
 //     return;
 //   }
 
 //   fetchCountries(searchBoxValue)
 //     .then(data => {
 //       countries = data;
-
 //       render();
 //     })
 //     .catch(() => {

@@ -4,11 +4,12 @@
 //   return fetch(
 //     `${URL}/name/${name}?fields=name,capital,population,flags,languages`
 //   )
-//     .then(response => response.json())
-//     .then(data => {
-//       return data;
+//     .then(response => {
+//       if (response.ok) {
+//         return response.json();
+//       }
+//       throw new Error();
 //     })
-//     .catch(error => {
-//       return error;
-//     });
+//     .then(data => data)
+//     .catch(error => error);
 // };
