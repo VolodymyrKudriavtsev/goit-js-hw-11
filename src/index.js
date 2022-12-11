@@ -1,8 +1,9 @@
 import './css/styles.css';
 // import debounce from 'lodash.debounce';
 // import { Notify } from 'notiflix/build/notiflix-notify-aio';
-// import { fetchCountries } from './fetchCountries';
 import refs from './references';
+import { fetchPhoto } from './fetch-photo';
+
 console.log(refs);
 
 //! refs.search.addEventListener('click', e => {
@@ -103,3 +104,4 @@ console.log(refs);
 //   'input',
 //   debounce(onSearchBoxInput, DEBOUNCE_DELAY)
 // );
+fetchPhoto();
