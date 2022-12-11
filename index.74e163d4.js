@@ -1,0 +1,2 @@
+!function(){var o=refs={},n=new URLSearchParams({key:"31991210-5d8d315bab6d2995c6cf86716",q:"cats",image_type:"photo",orientation:"horizontal",safesearch:!0});console.log(o),n.set("q","searchBoxValue"),fetch("https://pixabay.com/api/?".concat(n)).then((function(o){if(o.ok)return o.json();throw new Error})).then((function(o){return console.log(o)})).catch((function(o){return o}))}();
+//# sourceMappingURL=index.74e163d4.js.map
