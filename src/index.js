@@ -1,18 +1,12 @@
 import './css/styles.css';
-// ??? import debounce from 'lodash.debounce';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import refs from './references';
 import { fetchPhoto } from './fetch-photo';
-
-console.log(refs);
-
-//? refs.search.addEventListener('click', e => {
-//?   refs.iconSpinner.classList.toggle('is-hidden');
-//?   refs.iconSearch.classList.toggle('is-hidden');
-//? });
+// const axios = require('axios').default;
 
 let items = [];
-console.dir(refs.submitButton);
+
+// !---Р А З М Е Т К А !!!
 
 const searchBtnDisableToggle = () => {
   refs.submitButton.toggleAttribute('disabled');
@@ -20,6 +14,8 @@ const searchBtnDisableToggle = () => {
   refs.iconSpinner.classList.toggle('is-hidden');
   refs.iconSearch.classList.toggle('is-hidden');
 };
+
+// !---Спрятать 'Load More'
 
 const onSearchFormSubmit = e => {
   e.preventDefault();
@@ -30,27 +26,36 @@ const onSearchFormSubmit = e => {
 
   searchBtnDisableToggle();
 
-  //!   refs.iconSpinner.classList.toggle('is-hidden');
-  //!   refs.iconSearch.classList.toggle('is-hidden');
-
-  // !Очистить HTML перед новым запросом
+  // !---Очистить HTML перед новым запросом
   // if (searchBoxValue === '') {
   //   clearHTML();
   //   return;
   // }
 
-  fetchPhoto(searchQuery).then(({ hits }) => {
+  fetchPhoto(searchQuery).then(({ data: { hits } }) => {
+    console.log(hits);
     if (hits.length === 0) {
       return Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
     }
-
-    items = hits;
-    console.log(items);
-
     searchBtnDisableToggle();
   });
+
+  // .then(({ hits }) => {
+  //   if (hits.length === 0) {
+  //     return Notify.failure(
+  //       'Sorry, there are no images matching your search query. Please try again.'
+  //     );
+  //   }
+
+  //   items = hits;
+  //   console.log(items);
+
+  //   searchBtnDisableToggle();
+  // });
+
+  // !---Показать 'Load More' после первого рендера
 
   // fetchCountries(searchBoxValue)
   //   .then(data => {
@@ -61,10 +66,7 @@ const onSearchFormSubmit = e => {
   //     return Notify.failure('Oops, there is no country with that name');
   //   });
 };
-// refs.searchArea.addEventListener(
-//   'input',
-//   debounce(onSearcAreaInput, DEBOUNCE_DELAY)
-// );
+
 refs.searchForm.addEventListener('submit', onSearchFormSubmit);
 
 // const getCounrtyListMarkup = ({ flags, name }) => {
