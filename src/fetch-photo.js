@@ -10,15 +10,12 @@ const searchParams = new URLSearchParams({
 
 export const fetchPhoto = query => {
   searchParams.set('q', query);
-  return (
-    fetch(`https://pixabay.com/api/?${searchParams}`)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error();
-      })
-      // .then(data => console.log(data))
-      .catch(error => error)
-  );
+  return fetch(`https://pixabay.com/api/?${searchParams}`)
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error();
+    })
+    .catch(error => error);
 };
