@@ -15,7 +15,6 @@ body {
 img {
   display: block;
   max-width: 100%;
-  /* height: fit-content; */
 }
 
 .search-form {
@@ -96,22 +95,16 @@ input {
 }
 
 .photo-card {
-  /* display: flex; */
   width: calc((100% - 45px) / 4);
   border-radius: 0 0 4px 4px;
   box-shadow: 1px 3px 7px 0px #94c3cc;
-  /* outline: 1px solid tomato; */
 }
 
 .info {
   display: flex;
   justify-content: space-between;
-  /* padding: 5px; */
   font-size: 14;
-  /* justify-content: space-between; */
   padding: 5px;
-  /* font-size: 14px; */
-  /* display: flex; */
   gap: 20px;
   padding: 15px;
   font-size: x-small;
@@ -124,5 +117,4 @@ p {
 }
 b {
   display: block;
-  /* text-align: center; */
 }

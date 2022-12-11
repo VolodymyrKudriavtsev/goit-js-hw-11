@@ -1,5 +1,7 @@
 import './css/styles.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import refs from './references';
 import { fetchPhoto } from './fetch-photo';
 
@@ -26,7 +28,9 @@ const getCardsMarkup = ({
 }) => {
   return `
   <div class="photo-card">
-    <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+    <a  href="${largeImageURL}">
+      <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+    </a>    
     <div class="info">
       <p class="info-item"><b>Likes</b>${likes}</p>
       <p class="info-item"><b>Views</b>${views}</p>
@@ -76,6 +80,7 @@ const onSearchFormSubmit = e => {
     photoCards = hits;
     render();
     searchBtnDisableToggle();
+    // const lightbox = new SimpleLightbox('.gallery a');
   });
 
   //   items = hits;
@@ -96,7 +101,13 @@ const onSearchFormSubmit = e => {
   //   });
 };
 
+const onGalleryImgClick = e => {
+  e.preventDefault();
+  if (e.target.nodeName !== 'IMG') return;
+};
+
 refs.searchForm.addEventListener('submit', onSearchFormSubmit);
+refs.gallery.addEventListener('click', onGalleryImgClick);
 
 // const getCounrtyListMarkup = ({ flags, name }) => {
 //   return `
