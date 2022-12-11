@@ -1,6 +1,6 @@
 import './css/styles.css';
 // import debounce from 'lodash.debounce';
-// import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import refs from './references';
 import { fetchPhoto } from './fetch-photo';
 
@@ -31,9 +31,24 @@ const onSearchFormSubmit = e => {
   // }
 
   fetchPhoto(searchQuery).then(({ hits }) => {
+    if (hits.length === 0) {
+      return Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+    }
+
     items = hits;
     console.log(items);
   });
+
+  // fetchCountries(searchBoxValue)
+  //   .then(data => {
+  //     countries = data;
+  //     render();
+  //   })
+  //   .catch(() => {
+  //     return Notify.failure('Oops, there is no country with that name');
+  //   });
 };
 
 refs.searchForm.addEventListener('submit', onSearchFormSubmit);
