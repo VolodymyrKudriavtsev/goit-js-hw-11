@@ -8,15 +8,17 @@ const searchParams = new URLSearchParams({
   // per_page: 4,
 });
 
-export const fetchPhoto = () => {
-  searchParams.set('q', 'searchBoxValue');
-  return fetch(`https://pixabay.com/api/?${searchParams}`)
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      }
-      throw new Error();
-    })
-    .then(data => console.log(data))
-    .catch(error => error);
+export const fetchPhoto = query => {
+  searchParams.set('q', query);
+  return (
+    fetch(`https://pixabay.com/api/?${searchParams}`)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error();
+      })
+      // .then(data => console.log(data))
+      .catch(error => error)
+  );
 };

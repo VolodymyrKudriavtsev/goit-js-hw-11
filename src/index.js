@@ -6,14 +6,37 @@ import { fetchPhoto } from './fetch-photo';
 
 console.log(refs);
 
-//! refs.search.addEventListener('click', e => {
-//!   refs.iconSpinner.classList.toggle('is-hidden');
-//!   refs.iconSearch.classList.toggle('is-hidden');
-//! });
+//? refs.search.addEventListener('click', e => {
+//?   refs.iconSpinner.classList.toggle('is-hidden');
+//?   refs.iconSearch.classList.toggle('is-hidden');
+//? });
 
 // const DEBOUNCE_DELAY = 300;
-// let searchBoxValue = '';
-// let countries = [];
+let searchQuery = '';
+let items = [];
+console.dir(refs.submitButton);
+
+const onSearchFormSubmit = e => {
+  e.preventDefault();
+  refs.submitButton.disabled = true;
+  refs.submitButton.classList.toggle('disabled');
+  //!   refs.iconSpinner.classList.toggle('is-hidden');
+  //!   refs.iconSearch.classList.toggle('is-hidden');
+
+  searchQuery = e.target.elements.searchQuery.value.trim();
+  // !Очистить HTML перед новым запросом
+  // if (searchBoxValue === '') {
+  //   clearHTML();
+  //   return;
+  // }
+
+  fetchPhoto(searchQuery).then(({ hits }) => {
+    items = hits;
+    console.log(items);
+  });
+};
+
+refs.searchForm.addEventListener('submit', onSearchFormSubmit);
 
 // const getCounrtyListMarkup = ({ flags, name }) => {
 //   return `
@@ -42,12 +65,6 @@ console.log(refs);
 //     <li class="card-element"><span>Languages:</span>${lang}</li>
 //   </ul>
 //   `;
-// };
-
-// const refs = {
-//   searchBox: document.querySelector('#search-box'),
-//   counrtyList: document.querySelector('.country-list'),
-//   counrtyInfo: document.querySelector('.country-info'),
 // };
 
 // const renderList = () => {
@@ -81,27 +98,3 @@ console.log(refs);
 //     renderInfo();
 //   }
 // };
-
-// const onSearchBoxInput = e => {
-//   searchBoxValue = e.target.value.trim();
-
-//   if (searchBoxValue === '') {
-//     clearHTML();
-//     return;
-//   }
-
-//   fetchCountries(searchBoxValue)
-//     .then(data => {
-//       countries = data;
-//       render();
-//     })
-//     .catch(() => {
-//       return Notify.failure('Oops, there is no country with that name');
-//     });
-// };
-
-// refs.searchBox.addEventListener(
-//   'input',
-//   debounce(onSearchBoxInput, DEBOUNCE_DELAY)
-// );
-fetchPhoto();

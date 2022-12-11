@@ -35,7 +35,7 @@ input {
   outline: none;
 }
 
-.search,
+.let-search,
 .load-more {
   display: flex;
   justify-content: center;
@@ -45,7 +45,7 @@ input {
   background-color: #0000ff;
 }
 
-.search {
+.let-search {
   padding: 0;
   width: 25px;
   border-radius: 0 5px 5px 0;
@@ -58,6 +58,10 @@ input {
   width: 80px;
   border-radius: 5px;
   color: #fafafa;
+}
+
+.disabled {
+  background-color: #0988f0;
 }
 
 .icon {
