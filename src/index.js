@@ -7,16 +7,6 @@ import { fetchPhoto } from './fetch-photo';
 
 let photoCards = [];
 
-// !---Р А З М Е Т К А !!!
-
-//!? webformatURL - посилання на маленьке зображення для списку карток.
-//! largeImageURL - посилання на велике зображення.
-//!? tags - рядок з описом зображення. Підійде для атрибуту alt.
-//!? likes - кількість лайків.
-//!? views - кількість переглядів.
-//!? comments - кількість коментарів.
-//!? downloads - кількість завантажень.
-
 const getCardsMarkup = ({
   webformatURL,
   largeImageURL,
@@ -29,7 +19,7 @@ const getCardsMarkup = ({
   return `
   <div class="photo-card">
     <a  href="${largeImageURL}">
-      <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+      <img src="${webformatURL}" alt="${tags}" loading="lazy"/>
     </a>    
     <div class="info">
       <p class="info-item"><b>Likes</b>${likes}</p>
@@ -43,8 +33,14 @@ const getCardsMarkup = ({
 const searchBtnDisableToggle = () => {
   refs.submitButton.toggleAttribute('disabled');
   refs.submitButton.classList.toggle('disabled');
-  refs.iconSpinner.classList.toggle('is-hidden');
+  refs.iconSpinner[0].classList.toggle('is-hidden');
   refs.iconSearch.classList.toggle('is-hidden');
+};
+
+const loadMoreButtonDisableToggle = () => {
+  refs.loadMoreButton.toggleAttribute('disabled');
+  refs.loadMoreButton.classList.toggle('disabled');
+  refs.iconSpinner[1].classList.toggle('is-hidden');
 };
 
 const render = () => {
@@ -54,51 +50,33 @@ const render = () => {
   );
 };
 
-// !---Спрятать 'Load More'
-
 const onSearchFormSubmit = e => {
   e.preventDefault();
   const searchQuery = e.target.elements.searchQuery.value.trim();
-
   if (searchQuery === '') return;
-  // ?searchButtonDisabled();
 
   searchBtnDisableToggle();
+  refs.gallery.innerHTML = '';
+  refs.loadMoreButton.classList.add('is-hidden');
 
-  // !---Очистить HTML перед новым запросом
-  // if (searchBoxValue === '') {
-  //   clearHTML();
-  //   return;
-  // }
+  fetchPhoto(searchQuery)
+    .then(({ data: { hits } }) => {
+      if (hits.length === 0) {
+        return Notify.failure(
+          'Sorry, there are no images matching your search query. Please try again.'
+        );
+      }
+      photoCards = hits;
+      render();
 
-  fetchPhoto(searchQuery).then(({ data: { hits } }) => {
-    if (hits.length === 0) {
-      return Notify.failure(
-        'Sorry, there are no images matching your search query. Please try again.'
-      );
-    }
-    photoCards = hits;
-    render();
-    searchBtnDisableToggle();
-    // const lightbox = new SimpleLightbox('.gallery a');
-  });
+      // ? --- Перевірити, чи працюватиме lightbox на фото з іншими посиланнями (після 'Load More') --- ?
+      const lightbox = new SimpleLightbox('.gallery a');
 
-  //   items = hits;
-  //   console.log(items);
-
-  //   searchBtnDisableToggle();
-  // });
-
-  // !---Показать 'Load More' после первого рендера
-
-  // fetchCountries(searchBoxValue)
-  //   .then(data => {
-  //     countries = data;
-  //     render();
-  //   })
-  //   .catch(() => {
-  //     return Notify.failure('Oops, there is no country with that name');
-  //   });
+      refs.loadMoreButton.classList.remove('is-hidden');
+    })
+    .finally(() => {
+      searchBtnDisableToggle();
+    });
 };
 
 const onGalleryImgClick = e => {
@@ -106,7 +84,23 @@ const onGalleryImgClick = e => {
   if (e.target.nodeName !== 'IMG') return;
 };
 
+// ! ----- П А Г І Н А Ц І Я ----- !
+
+const onLoadMoreButtonClick = e => {
+  const searchQuery = refs.searchForm.elements.searchQuery.value.trim();
+  refs.loadMoreButton.lastElementChild.textContent = '';
+  loadMoreButtonDisableToggle();
+
+  fetchPhoto(searchQuery).then(({ data: { hits } }) => {
+    photoCards = hits;
+    render();
+    refs.loadMoreButton.lastElementChild.textContent = 'Load more';
+    loadMoreButtonDisableToggle();
+  });
+};
+
 refs.searchForm.addEventListener('submit', onSearchFormSubmit);
+refs.loadMoreButton.addEventListener('click', onLoadMoreButtonClick);
 refs.gallery.addEventListener('click', onGalleryImgClick);
 
 // const getCounrtyListMarkup = ({ flags, name }) => {
