@@ -10,12 +10,13 @@ body {
   background-color: #fafafa;
   color: #212121;
   line-height: 1.5;
+  margin: 0;
 }
 
 img {
   display: block;
-  height: 200px;
-  max-width: 100%;
+  height: 210px;
+  width: 100%;
 }
 
 .search-form {
@@ -64,6 +65,7 @@ input {
 .load-more {
   margin-left: auto;
   margin-right: auto;
+  margin-top: 10px;
   padding: 5px 5px;
   width: 80px;
   border-radius: 5px;
@@ -90,14 +92,15 @@ input {
 .gallery {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 10px;
+  justify-content: space-between;
   margin-top: 50px;
-  padding: 15px;
-  height: 100%;
+  padding: 10px;
 }
 
 .photo-card {
-  width: calc((100% - 45px) / 4);
+  width: 285px;
+  height: 270px;
   border-radius: 0 0 4px 4px;
   box-shadow: 1px 3px 7px 0px #94c3cc;
 }
