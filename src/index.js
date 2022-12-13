@@ -2,7 +2,7 @@ import './css/styles.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import refs from './references';
+import { refs } from './references';
 import { searchParams } from './fetch-photo';
 import { fetchPhoto } from './fetch-photo';
 

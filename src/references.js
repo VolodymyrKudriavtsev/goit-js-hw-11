@@ -1,4 +1,4 @@
-export default refs = {
+export const refs = {
   searchForm: document.querySelector('.search-form'),
   searchArea: document.querySelector('.search-form > input'),
   submitButton: document.querySelector('.let-search'),
