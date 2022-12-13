@@ -3,9 +3,11 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import refs from './references';
+import { searchParams } from './fetch-photo';
 import { fetchPhoto } from './fetch-photo';
 
 let photoCards = [];
+let page = Number(searchParams.get('page'));
 
 const getCardsMarkup = ({
   webformatURL,
@@ -48,6 +50,13 @@ const render = () => {
     'beforeend',
     photoCards.map(getCardsMarkup).join('')
   );
+  const lightbox = new SimpleLightbox('.gallery a');
+  lightbox.refresh();
+};
+
+const pageIncrement = () => {
+  page += 1;
+  searchParams.set('page', page);
 };
 
 const onSearchFormSubmit = e => {
@@ -59,18 +68,24 @@ const onSearchFormSubmit = e => {
   refs.gallery.innerHTML = '';
   refs.loadMoreButton.classList.add('is-hidden');
 
+  page = 0;
+  pageIncrement();
+
   fetchPhoto(searchQuery)
-    .then(({ data: { hits } }) => {
+    .then(({ data: { hits, totalHits } }) => {
       if (hits.length === 0) {
         return Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.'
+          'Sorry, there are no images matching your search query. Please try again.',
+          { position: 'center-center' }
         );
       }
+
+      Notify.info(`Hooray! We found ${totalHits} images.`, {
+        position: 'center-center',
+      });
+
       photoCards = hits;
       render();
-
-      // ? --- Перевірити, чи працюватиме lightbox на фото з іншими посиланнями (після 'Load More') --- ?
-      const lightbox = new SimpleLightbox('.gallery a');
 
       refs.loadMoreButton.classList.remove('is-hidden');
     })
@@ -79,87 +94,35 @@ const onSearchFormSubmit = e => {
     });
 };
 
-const onGalleryImgClick = e => {
-  e.preventDefault();
-  if (e.target.nodeName !== 'IMG') return;
-};
-
-// ! ----- П А Г І Н А Ц І Я ----- !
-
 const onLoadMoreButtonClick = e => {
   const searchQuery = refs.searchForm.elements.searchQuery.value.trim();
   refs.loadMoreButton.lastElementChild.textContent = '';
   loadMoreButtonDisableToggle();
 
+  pageIncrement();
+
   fetchPhoto(searchQuery).then(({ data: { hits } }) => {
     photoCards = hits;
     render();
+
+    if (photoCards.length < 40) {
+      refs.loadMoreButton.classList.add('is-hidden');
+      return Notify.info(
+        "We're sorry, but you've reached the end of search results.",
+        { position: 'center-center' }
+      );
+    }
+
     refs.loadMoreButton.lastElementChild.textContent = 'Load more';
     loadMoreButtonDisableToggle();
   });
 };
 
+const onGalleryImgClick = e => {
+  e.preventDefault();
+  if (e.target.nodeName !== 'IMG') return;
+};
+
 refs.searchForm.addEventListener('submit', onSearchFormSubmit);
 refs.loadMoreButton.addEventListener('click', onLoadMoreButtonClick);
 refs.gallery.addEventListener('click', onGalleryImgClick);
-
-// const getCounrtyListMarkup = ({ flags, name }) => {
-//   return `
-//   <li class="country-element">
-//     <img src="${flags.svg}" alt="Country flag" width="25" />
-//     <h class="country-title">${name.common}</h>
-//   </li>
-// `;
-// };
-// const getCounrtyInfoMarkup = ({
-//   flags,
-//   name,
-//   capital,
-//   population,
-//   languages,
-// }) => {
-//   const lang = Object.values(languages).join(', ');
-//   return `
-//   <div class="card-title">
-//     <img src="${flags.svg}" alt="Country flag" width="40" />
-//     <h>${name.official}</h>
-//   </div>
-//   <ul class="card-list">
-//     <li class="card-element"><span>Capital:</span>${capital}</li>
-//     <li class="card-element"><span>Population:</span>${population}</li>
-//     <li class="card-element"><span>Languages:</span>${lang}</li>
-//   </ul>
-//   `;
-// };
-
-// const renderList = () => {
-//   refs.counrtyList.insertAdjacentHTML(
-//     'beforeend',
-//     countries.map(getCounrtyListMarkup).join('')
-//   );
-// };
-// const renderInfo = () => {
-//   refs.counrtyInfo.insertAdjacentHTML(
-//     'beforeend',
-//     countries.map(getCounrtyInfoMarkup)
-//   );
-// };
-
-// const clearHTML = () => {
-//   refs.counrtyList.innerHTML = '';
-//   refs.counrtyInfo.innerHTML = '';
-// };
-
-// const render = () => {
-//   clearHTML();
-
-//   if (countries.length > 10) {
-//     return Notify.info(
-//       'Too many matches found. Please enter a more specific name.'
-//     );
-//   } else if (countries.length < 10 && countries.length >= 2) {
-//     renderList();
-//   } else {
-//     renderInfo();
-//   }
-// };
