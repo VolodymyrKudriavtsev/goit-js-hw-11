@@ -8,6 +8,7 @@ import { fetchPhoto } from './fetch-photo';
 
 let photoCards = [];
 let page = Number(searchParams.get('page'));
+const perPage = Number(searchParams.get('per_page'));
 
 const getCardsMarkup = ({
   webformatURL,
@@ -45,6 +46,9 @@ const loadMoreButtonDisableToggle = () => {
   refs.iconSpinner[1].classList.toggle('is-hidden');
 };
 
+//! const loadMoreButtonEnabled = () => {};
+//! const loadMoreButtonDisabled = () => {};
+
 const render = () => {
   refs.gallery.insertAdjacentHTML(
     'beforeend',
@@ -59,12 +63,34 @@ const pageIncrement = () => {
   searchParams.set('page', page);
 };
 
+const firstCardsQuantityCheck = totalHits => {
+  if (photoCards.length === 0) {
+    return Notify.failure(
+      'Sorry, there are no images matching your search query. Please try again.',
+      { position: 'center-center' }
+    );
+  } else if (photoCards.length === perPage) {
+    Notify.info(`Hooray! We found ${totalHits} images.`, {
+      position: 'center-center',
+    });
+    refs.loadMoreButton.classList.remove('is-hidden');
+  } else if (photoCards.length < perPage) {
+    refs.loadMoreButton.classList.add('is-hidden');
+    return Notify.info(
+      "We're sorry, but you've reached the end of search results.",
+      { position: 'center-center' }
+    );
+  }
+};
+const followingCardsQuantityChecks = () => {};
+
 const onSearchFormSubmit = e => {
   e.preventDefault();
   const searchQuery = e.target.elements.searchQuery.value.trim();
   if (searchQuery === '') return;
 
   searchBtnDisableToggle();
+
   refs.gallery.innerHTML = '';
   refs.loadMoreButton.classList.add('is-hidden');
 
@@ -73,21 +99,9 @@ const onSearchFormSubmit = e => {
 
   fetchPhoto(searchQuery)
     .then(({ data: { hits, totalHits } }) => {
-      if (hits.length === 0) {
-        return Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.',
-          { position: 'center-center' }
-        );
-      }
-
-      Notify.info(`Hooray! We found ${totalHits} images.`, {
-        position: 'center-center',
-      });
-
       photoCards = hits;
       render();
-
-      refs.loadMoreButton.classList.remove('is-hidden');
+      firstCardsQuantityCheck(totalHits);
     })
     .finally(() => {
       searchBtnDisableToggle();
