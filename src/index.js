@@ -97,6 +97,16 @@ const followingCardsQuantityCheck = totalHits => {
   }
 };
 
+const smoothCardsSroll = () => {
+  const { height: cardHeight } =
+    refs.gallery.firstElementChild.getBoundingClientRect();
+
+  scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
+};
+
 const onSearchFormSubmit = e => {
   e.preventDefault();
   const searchQuery = e.target.elements.searchQuery.value.trim();
@@ -130,9 +140,8 @@ const onLoadMoreButtonClick = e => {
   fetchPhoto(searchQuery).then(({ data: { hits, totalHits } }) => {
     photoCards = hits;
     render();
-
+    smoothCardsSroll();
     followingCardsQuantityCheck(totalHits);
-
     loadMoreButtonEnabled();
   });
 };
