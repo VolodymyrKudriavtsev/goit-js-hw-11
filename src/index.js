@@ -40,14 +40,18 @@ const searchBtnDisableToggle = () => {
   refs.iconSearch.classList.toggle('is-hidden');
 };
 
-const loadMoreButtonDisableToggle = () => {
-  refs.loadMoreButton.toggleAttribute('disabled');
-  refs.loadMoreButton.classList.toggle('disabled');
-  refs.iconSpinner[1].classList.toggle('is-hidden');
+const loadMoreButtonDisabled = () => {
+  refs.loadMoreButton.lastElementChild.textContent = '';
+  refs.loadMoreButton.setAttribute('disabled', true);
+  refs.loadMoreButton.classList.add('disabled');
+  refs.iconSpinner[1].classList.remove('is-hidden');
 };
-
-//! const loadMoreButtonEnabled = () => {};
-//! const loadMoreButtonDisabled = () => {};
+const loadMoreButtonEnabled = () => {
+  refs.loadMoreButton.lastElementChild.textContent = 'Load more';
+  refs.loadMoreButton.removeAttribute('disabled');
+  refs.loadMoreButton.classList.remove('disabled');
+  refs.iconSpinner[1].classList.add('is-hidden');
+};
 
 const render = () => {
   refs.gallery.insertAdjacentHTML(
@@ -64,17 +68,27 @@ const pageIncrement = () => {
 };
 
 const firstCardsQuantityCheck = totalHits => {
-  if (photoCards.length === 0) {
+  if (totalHits === 0) {
     return Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.',
       { position: 'center-center' }
     );
-  } else if (photoCards.length === perPage) {
+  } else if (totalHits < perPage) {
+    refs.loadMoreButton.classList.add('is-hidden');
+    return Notify.info(
+      "We're sorry, but you've reached the end of search results.",
+      { position: 'center-center' }
+    );
+  } else {
+    refs.loadMoreButton.classList.remove('is-hidden');
     Notify.info(`Hooray! We found ${totalHits} images.`, {
       position: 'center-center',
     });
-    refs.loadMoreButton.classList.remove('is-hidden');
-  } else if (photoCards.length < perPage) {
+  }
+};
+
+const followingCardsQuantityCheck = totalHits => {
+  if (page >= totalHits / perPage) {
     refs.loadMoreButton.classList.add('is-hidden');
     return Notify.info(
       "We're sorry, but you've reached the end of search results.",
@@ -82,7 +96,6 @@ const firstCardsQuantityCheck = totalHits => {
     );
   }
 };
-const followingCardsQuantityChecks = () => {};
 
 const onSearchFormSubmit = e => {
   e.preventDefault();
@@ -100,8 +113,8 @@ const onSearchFormSubmit = e => {
   fetchPhoto(searchQuery)
     .then(({ data: { hits, totalHits } }) => {
       photoCards = hits;
-      render();
       firstCardsQuantityCheck(totalHits);
+      render();
     })
     .finally(() => {
       searchBtnDisableToggle();
@@ -110,25 +123,17 @@ const onSearchFormSubmit = e => {
 
 const onLoadMoreButtonClick = e => {
   const searchQuery = refs.searchForm.elements.searchQuery.value.trim();
-  refs.loadMoreButton.lastElementChild.textContent = '';
-  loadMoreButtonDisableToggle();
+  loadMoreButtonDisabled();
 
   pageIncrement();
 
-  fetchPhoto(searchQuery).then(({ data: { hits } }) => {
+  fetchPhoto(searchQuery).then(({ data: { hits, totalHits } }) => {
     photoCards = hits;
     render();
 
-    if (photoCards.length < 40) {
-      refs.loadMoreButton.classList.add('is-hidden');
-      return Notify.info(
-        "We're sorry, but you've reached the end of search results.",
-        { position: 'center-center' }
-      );
-    }
+    followingCardsQuantityCheck(totalHits);
 
-    refs.loadMoreButton.lastElementChild.textContent = 'Load more';
-    loadMoreButtonDisableToggle();
+    loadMoreButtonEnabled();
   });
 };
 
