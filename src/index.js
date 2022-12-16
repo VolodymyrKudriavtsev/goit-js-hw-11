@@ -107,7 +107,7 @@ const smoothCardsSroll = () => {
   });
 };
 
-const onSearchFormSubmit = e => {
+const onSearchFormSubmit = async e => {
   e.preventDefault();
   const searchQuery = e.target.elements.searchQuery.value.trim();
   if (searchQuery === '') return;
@@ -120,30 +120,41 @@ const onSearchFormSubmit = e => {
   page = 0;
   pageIncrement();
 
-  fetchPhoto(searchQuery)
-    .then(({ data: { hits, totalHits } }) => {
-      photoCards = hits;
-      firstCardsQuantityCheck(totalHits);
-      render();
-    })
-    .finally(() => {
-      searchBtnDisableToggle();
-    });
+  try {
+    const {
+      data: { hits, totalHits },
+    } = await fetchPhoto(searchQuery);
+    photoCards = hits;
+
+    firstCardsQuantityCheck(totalHits);
+  } catch (error) {
+    console.log(error);
+  }
+
+  render();
+  searchBtnDisableToggle();
 };
 
-const onLoadMoreButtonClick = e => {
+const onLoadMoreButtonClick = async e => {
   const searchQuery = refs.searchForm.elements.searchQuery.value.trim();
   loadMoreButtonDisabled();
 
   pageIncrement();
 
-  fetchPhoto(searchQuery).then(({ data: { hits, totalHits } }) => {
+  try {
+    const {
+      data: { hits, totalHits },
+    } = await fetchPhoto(searchQuery);
     photoCards = hits;
-    render();
-    smoothCardsSroll();
+
     followingCardsQuantityCheck(totalHits);
-    loadMoreButtonEnabled();
-  });
+  } catch (error) {
+    console.log(error);
+  }
+
+  render();
+  smoothCardsSroll();
+  loadMoreButtonEnabled();
 };
 
 const onGalleryImgClick = e => {

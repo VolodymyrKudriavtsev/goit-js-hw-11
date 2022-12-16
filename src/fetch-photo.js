@@ -12,12 +12,7 @@ export const searchParams = new URLSearchParams({
 
 export async function fetchPhoto(query) {
   searchParams.set('q', query);
-  try {
-    const response = await axios.get(
-      `https://pixabay.com/api/?${searchParams}`
-    );
-    return response;
-  } catch (error) {
-    console.error(error);
-  }
+
+  const response = await axios.get(`https://pixabay.com/api/?${searchParams}`);
+  return response;
 }
